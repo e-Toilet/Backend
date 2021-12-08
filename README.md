@@ -43,5 +43,26 @@ git push (遠端) (本機分支):(遠端分支)
 
 完成 push !
   
-[參考](https://blog.csdn.net/kuangdacaikuang/article/details/84632883)
-[push -u的意義](https://blog.csdn.net/Lakers2015/article/details/111318801)
+* [參考](https://blog.csdn.net/kuangdacaikuang/article/details/84632883)
+* [push -u的意義](https://blog.csdn.net/Lakers2015/article/details/111318801)
+* [git 教學](https://zlargon.gitbooks.io/git-tutorial/content/remote/push.html)
+
+## git 步驟
+
+```
+git pull origin main
+```
+
+```
+git add .
+```
+
+```
+git commit -m '<註解>'
+```
+
+```
+git push origin main
+```
+
+因為我們只有一個 branch 所以也不用管分支的問題。
