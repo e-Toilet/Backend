@@ -14,6 +14,7 @@ git remote add origin https://github.com/e-Toilet/Backend.git
 不確定是否必要，把本機端的 branch master rename 成 main
 ```
 git branch -m master main
+```
 
 從 origin 端拉下名為 main 的 branch，且與本機端的 main 合併。
 ```
@@ -40,7 +41,7 @@ git push -u origin main:main
 git push (遠端) (本機分支):(遠端分支)
 ```
 
- 完成 push !
+完成 push !
   
 [參考](https://blog.csdn.net/kuangdacaikuang/article/details/84632883)
 [push -u的意義](https://blog.csdn.net/Lakers2015/article/details/111318801)
