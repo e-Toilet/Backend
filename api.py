@@ -49,6 +49,11 @@ api.add_resource(Toilet.getToiletByLoc, '/getToiletByLoc')
 api.add_resource(Toilet.CreateNewToilet, '/CreateNewToilet')
 api.add_resource(Toilet.getToiletByLongtitude, '/getToiletByLongtitude')
 
+#開始頁面叫這三個?
+api.add_resource(Toilet.getAllCity, '/getAllCity')
+api.add_resource(Toilet.getAllCountry, '/getAllCountry')
+api.add_resource(Toilet.getAllDistrict, '/getAllDistrict')
+
 #Review
 api.add_resource(Review.getReview, '/getReview')
 api.add_resource(Review.getAvgRating, '/getAvgRating')

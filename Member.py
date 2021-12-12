@@ -1,7 +1,7 @@
 #flask 套件
 from flask import Flask,request
 #flask 傳輸/解析https 文件套件,以及api建立
-from flask_restful import Resource, Api,reqparse
+from flask_restful import Resource, Api,reqparse, abort
 #轉json格式
 import json
 #匯入pandas 
@@ -38,13 +38,15 @@ class Signin(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Memberinfo':data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Memberinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Memberinfo':data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
             return {'error': str(e)}
-
 
 class Register(Resource):
     def post(self):
@@ -77,12 +79,13 @@ class Register(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'StatusCode':'1000','Message': str(data[0])}
+                # return abort(1000, str(data[0]))
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)}, 400
 
 class getMemberInfo(Resource):
     def get(self):
@@ -109,12 +112,15 @@ class getMemberInfo(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Memberinfo': data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Memberinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Memberinfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)}, 400
 
 class getAllMember(Resource):
     def get(self):
@@ -139,7 +145,6 @@ class getAllMember(Resource):
             #顯示錯誤訊息
             conn.rollback()
             return {'error': str(e)}
-
 
 class getMemberReviewCount(Resource):
     def get(self):
@@ -166,7 +171,10 @@ class getMemberReviewCount(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Review_count':data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Review_count': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Review_count':data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -245,6 +253,7 @@ class updateMemberStatus(Resource):
             #顯示錯誤訊息
             conn.rollback()
             return {'error': str(e)}
+
 def Info (member_id):
         conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
@@ -304,7 +313,10 @@ class getMemberAllInfo(Resource):
             print(_member_id)
             info = Info(_member_id)
             count = CountR(_member_id)
-            return {'StatusCode':'200','Message': 'success' , 'Memberinfo':info, 'count' : count}
+            if info[0][0] is None or count[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found', 'Memberinfo':info, 'count' : count}
+            else:
+                return {'StatusCode':'200','Message': 'success' , 'Memberinfo':info, 'count' : count}
         except Exception as e:
             #顯示錯誤訊息
             return {'error': str(e)}

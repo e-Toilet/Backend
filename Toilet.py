@@ -24,6 +24,7 @@ class CreateNewToilet(Resource):
             parser.add_argument('district_id', type=int)
             parser.add_argument('longtitude', type=float)
             parser.add_argument('latitude', type=float)
+            parser.add_argument('address',type= str)
             #建立args
             args = parser.parse_args()
             #提取參數
@@ -33,14 +34,16 @@ class CreateNewToilet(Resource):
             _district_id = args['district_id']
             _longtitude = args['longtitude']
             _latitude = args['latitude']
+            _address = args['address']
             #呼叫sp
-            cursor.callproc('sp_setNewToilet',(_name,_country_id,_city_id,_district_id,_longtitude,_latitude))
+            cursor.callproc('sp_setNewToilet',(_name,_country_id,_city_id,_district_id,_longtitude,_latitude,_address))
             #提取回傳的資料
             data = cursor.fetchall()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
-                conn.close()        
+                conn.close() 
+                print(data)       
                 return {'StatusCode':'200','Message': 'Toilet creation success'}
             else:
                 conn.commit()
@@ -79,11 +82,16 @@ class getToiletByLoc(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
+                print(data)
                 return {'StatusCode':'1000','Message': 'Error!!'}     
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                print(data) 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -99,13 +107,14 @@ class getToiletByLongtitude(Resource):
            #建立parser 
             parser = reqparse.RequestParser()
             # Parse the arguments
-            parser.add_argument('lontitude', type=float)
+            parser.add_argument('longtitude', type=float)
             parser.add_argument('latitude', type=float)
             #建立args
             args = parser.parse_args()
             #提取參數
             _longtitude = args['longtitude']
             _latitude = args['latitude']
+            print(_longtitude,_latitude)
             #呼叫sp
             cursor.callproc('sp_getToiletByLongtitude',(_longtitude,_latitude))
             #提取回傳的資料
@@ -120,7 +129,10 @@ class getToiletByLongtitude(Resource):
                 conn.commit()
                 conn.close()
                 print(data) 
-                return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -152,7 +164,19 @@ class getToiletByID(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+
+            # if data[0][0] == None:
+            #     conn.commit()
+            #     conn.close()
+            #     return {'StatusCode':'1000','Message': 'Error!!'}     
+            # else:
+            #     conn.commit()
+            #     conn.close()
+            #     return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -175,13 +199,16 @@ class getAllToilet(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+ 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
             return {'error': str(e)}
-
 
 class deleteToilet(Resource):
     def post(self):
@@ -285,7 +312,10 @@ class getCountry(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','CountryInfo': data} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','CountryInfo': data[0][0]}
+                else :
+                    return {'StatusCode':'200','Message': 'success!!','CountryInfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -317,13 +347,15 @@ class getCity(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','CityInfo': data} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','CityInfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','CityInfo': data} 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
             return {'error': str(e)}
-
 
 class getDistrict(Resource):
     def get(self):
@@ -350,11 +382,84 @@ class getDistrict(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','DistrictInfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data} 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
             return {'error': str(e)}
 
+class getAllCountry(Resource):
+    def get(self):
+        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        cursor = conn.cursor()
+        try:  
+            #呼叫sp
+            cursor.callproc('sp_getAllCountry')
+            #提取回傳的資料
+            data = cursor.fetchall()
+            #判斷回傳結果
+            if len(data) == 0:
+                conn.commit()
+                conn.close()
+                return {'StatusCode':'1000','Message': 'Error!!'}     
+            else:
+                conn.commit()
+                conn.close()
+                return {'StatusCode':'200','Message': 'success!!','CountryInfo': data} 
+                          
+        except Exception as e:
+            #顯示錯誤訊息
+            conn.rollback()
+            return {'error': str(e)}
 
+class getAllCity(Resource):
+    def get(self):
+        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        cursor = conn.cursor()
+        try:  
+            #呼叫sp
+            cursor.callproc('sp_getAllCity')
+            #提取回傳的資料
+            data = cursor.fetchall()
+            #判斷回傳結果
+            if len(data) == 0:
+                conn.commit()
+                conn.close()
+                return {'StatusCode':'1000','Message': 'Error!!'}     
+            else:
+                conn.commit()
+                conn.close()
+                return {'StatusCode':'200','Message': 'success!!','CityInfo': data} 
+                          
+        except Exception as e:
+            #顯示錯誤訊息
+            conn.rollback()
+            return {'error': str(e)}
+
+class getAllDistrict(Resource):
+    def get(self):
+        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        cursor = conn.cursor()
+        try:  
+            #呼叫sp
+            cursor.callproc('sp_getAllDistrict')
+            #提取回傳的資料
+            data = cursor.fetchall()
+            #判斷回傳結果
+            if len(data) == 0:
+                conn.commit()
+                conn.close()
+                return {'StatusCode':'1000','Message': 'Error!!'}     
+            else:
+                conn.commit()
+                conn.close()
+                return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data} 
+                          
+        except Exception as e:
+            #顯示錯誤訊息
+            conn.rollback()
+            return {'error': str(e)}

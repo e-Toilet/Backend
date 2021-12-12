@@ -76,7 +76,10 @@ class getReview(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Reviewinfo': data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','Reviewinfo': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','Reviewinfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -108,7 +111,10 @@ class getAvgRating(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','AvgRating': data[0][0]} 
+                if data[0][0] is None :
+                    return {'StatusCode':'204','Message': 'NO Data Found','AvgRating': data[0][0]}
+                else:
+                    return {'StatusCode':'200','Message': 'success!!','AvgRating': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
