@@ -9,6 +9,7 @@ import pandas as pd
 #flask 連接mysql
 import pymysql
 import datetime 
+import Review
 
 class createNewToilet(Resource):
     def post(self):
@@ -64,18 +65,13 @@ class getToiletByLoc(Resource):
         try:  
            #建立parser 
             parser = reqparse.RequestParser()
-            # Parse the arguments
-            parser.add_argument('country_id', type=int)
-            parser.add_argument('city_id', type=int)
             parser.add_argument('district_id', type=int)
             #建立args
             args = parser.parse_args()
             #提取參數
-            _country_id = args['country_id']
-            _city_id = args['city_id']
             _district_id = args['district_id']
             #呼叫sp
-            cursor.callproc('sp_getToiletByLoc',(_country_id,_city_id,_district_id))
+            cursor.callproc('sp_getToiletByLoc',(_district_id,))
             #提取回傳的資料
             data = cursor.fetchall()
             #判斷回傳結果
@@ -119,6 +115,9 @@ class getToiletByLongtitude(Resource):
             cursor.callproc('sp_getToiletByLongtitude',(_longtitude,_latitude))
             #提取回傳的資料
             data = cursor.fetchall()
+            # data_dict = json.load(data[0][0])
+            # data_json = json.dumps(data_dict)
+            # avgRating = Review.getAvgRating(data_json['toilet_id'])
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -168,15 +167,6 @@ class getToiletByID(Resource):
                     return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
                 else:
                     return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
-
-            # if data[0][0] == None:
-            #     conn.commit()
-            #     conn.close()
-            #     return {'StatusCode':'1000','Message': 'Error!!'}     
-            # else:
-            #     conn.commit()
-            #     conn.close()
-            #     return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -409,7 +399,7 @@ class getAllCountry(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','CountryInfo': data} 
+                return {'StatusCode':'200','Message': 'success!!','CountryInfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -433,7 +423,7 @@ class getAllCity(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','CityInfo': data} 
+                return {'StatusCode':'200','Message': 'success!!','CityInfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -457,7 +447,7 @@ class getAllDistrict(Resource):
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data} 
+                return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息

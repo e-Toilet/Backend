@@ -114,7 +114,8 @@ class getAvgRating(Resource):
                 if data[0][0] is None :
                     return {'StatusCode':'204','Message': 'NO Data Found','AvgRating': data[0][0]}
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','AvgRating': data[0][0]} 
+                    return {'StatusCode':'200','Message': 'success!!','AvgRating': data[0][0]}
+                    return data[0][0]
                           
         except Exception as e:
             #顯示錯誤訊息
