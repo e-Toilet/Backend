@@ -350,7 +350,7 @@ class getCity(Resource):
                 if data[0][0] is None :
                     return {'StatusCode':'204','Message': 'NO Data Found','CityInfo': data[0][0]}
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','CityInfo': data} 
+                    return {'StatusCode':'200','Message': 'success!!','CityInfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
@@ -385,7 +385,7 @@ class getDistrict(Resource):
                 if data[0][0] is None :
                     return {'StatusCode':'204','Message': 'NO Data Found','DistrictInfo': data[0][0]}
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data} 
+                    return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data[0][0]} 
                           
         except Exception as e:
             #顯示錯誤訊息
