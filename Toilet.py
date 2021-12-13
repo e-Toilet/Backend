@@ -10,7 +10,7 @@ import pandas as pd
 import pymysql
 import datetime 
 
-class CreateNewToilet(Resource):
+class createNewToilet(Resource):
     def post(self):
         conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
