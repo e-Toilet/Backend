@@ -38,16 +38,16 @@ class CreateNewReview(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'Review creation success'}
+                return {'Message': 'Review creation success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 
 
@@ -72,19 +72,19 @@ class getReview(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Reviewinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Reviewinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Reviewinfo': data[0][0]} 
+                    return {'Message': 'success!!','Reviewinfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getAvgRating(Resource):
     def get(self):
@@ -107,20 +107,20 @@ class getAvgRating(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000    
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','AvgRating': data[0][0]}
+                    return {'Message': 'NO Data Found','AvgRating': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','AvgRating': data[0][0]}
+                    return {'Message': 'success!!','AvgRating': data[0][0]},200
                     return data[0][0]
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class deleteReview(Resource):
     def post(self):
@@ -144,16 +144,16 @@ class deleteReview(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'Review deletion success'}
+                return {'Message': 'Review deletion success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 
 class updateReview(Resource):
@@ -183,15 +183,15 @@ class updateReview(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'Review Update success'}
+                return {'Message': 'Review Update success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 

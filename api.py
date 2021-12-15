@@ -47,7 +47,7 @@ api.add_resource(Toilet.updateToilet, '/updateToilet')
 api.add_resource(Toilet.getToiletByID, '/getToiletByID')
 api.add_resource(Toilet.getToiletByLoc, '/getToiletByLoc')
 api.add_resource(Toilet.createNewToilet, '/createNewToilet')
-api.add_resource(Toilet.getToiletByLongtitude, '/getToiletByLongtitude')
+api.add_resource(Toilet.getToiletByLongitude, '/getToiletByLongtitude')
 
 #開始頁面叫這三個?
 api.add_resource(Toilet.getAllCity, '/getAllCity')

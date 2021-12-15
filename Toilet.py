@@ -23,7 +23,7 @@ class createNewToilet(Resource):
             parser.add_argument('country_id', type=int)
             parser.add_argument('city_id', type=int)
             parser.add_argument('district_id', type=int)
-            parser.add_argument('longtitude', type=float)
+            parser.add_argument('longitude', type=float)
             parser.add_argument('latitude', type=float)
             parser.add_argument('address',type= str)
             #建立args
@@ -33,11 +33,11 @@ class createNewToilet(Resource):
             _country_id = args['country_id']
             _city_id = args['city_id']
             _district_id = args['district_id']
-            _longtitude = args['longtitude']
+            _longitude = args['longitude']
             _latitude = args['latitude']
             _address = args['address']
             #呼叫sp
-            cursor.callproc('sp_setNewToilet',(_name,_country_id,_city_id,_district_id,_longtitude,_latitude,_address))
+            cursor.callproc('sp_setNewToilet',(_name,_country_id,_city_id,_district_id,_longitude,_latitude,_address))
             #提取回傳的資料
             data = cursor.fetchall()
             #判斷回傳結果
@@ -45,16 +45,16 @@ class createNewToilet(Resource):
                 conn.commit()  
                 conn.close() 
                 print(data)       
-                return {'StatusCode':'200','Message': 'Toilet creation success'}
+                return {'Message': 'Toilet creation success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 
 
@@ -79,23 +79,23 @@ class getToiletByLoc(Resource):
                 conn.commit()
                 conn.close()
                 print(data)
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000 
             else:
                 conn.commit()
                 conn.close()
                 print(data) 
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Toiletinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                    return {'Message': 'success!!','Toiletinfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 
-class getToiletByLongtitude(Resource):
+class getToiletByLongitude(Resource):
     def get(self):
         conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
@@ -103,16 +103,16 @@ class getToiletByLongtitude(Resource):
            #建立parser 
             parser = reqparse.RequestParser()
             # Parse the arguments
-            parser.add_argument('longtitude', type=float)
+            parser.add_argument('longitude', type=float)
             parser.add_argument('latitude', type=float)
             #建立args
             args = parser.parse_args()
             #提取參數
-            _longtitude = args['longtitude']
+            _longitude = args['longitude']
             _latitude = args['latitude']
-            print(_longtitude,_latitude)
+            print(_longitude,_latitude)
             #呼叫sp
-            cursor.callproc('sp_getToiletByLongtitude',(_longtitude,_latitude))
+            cursor.callproc('sp_getToiletByLongitude',(_longitude,_latitude))
             #提取回傳的資料
             data = cursor.fetchall()
             # data_dict = json.load(data[0][0])
@@ -123,20 +123,20 @@ class getToiletByLongtitude(Resource):
                 conn.commit()
                 conn.close()
                 print(data)
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
                 print(data) 
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Toiletinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                    return {'Message': 'success!!','Toiletinfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getToiletByID(Resource):
     def get(self):
@@ -159,19 +159,19 @@ class getToiletByID(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000   
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Toiletinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                    return {'Message': 'success!!','Toiletinfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getAllToilet(Resource):
     def get(self):
@@ -185,20 +185,20 @@ class getAllToilet(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Toiletinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Toiletinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Toiletinfo': data[0][0]} 
+                    return {'Message': 'success!!','Toiletinfo': data[0][0]},200
  
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class deleteToilet(Resource):
     def post(self):
@@ -221,16 +221,16 @@ class deleteToilet(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'Toilet deletion success'}
+                return {'Message': 'Toilet deletion success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class updateToilet(Resource):
     def post(self):
@@ -242,40 +242,42 @@ class updateToilet(Resource):
             # Parse the arguments
             parser.add_argument('toilet_id', type=int)
             parser.add_argument('name', type=str)
-            parser.add_argument('country', type=int)
-            parser.add_argument('city', type=int)
-            parser.add_argument('district', type=int)
-            parser.add_argument('longtitude', type=float)
+            parser.add_argument('country_id', type=int)
+            parser.add_argument('city_id', type=int)
+            parser.add_argument('district_id', type=int)
+            parser.add_argument('longitude', type=float)
             parser.add_argument('latitude', type=float)
+            parser.add_argument('address',type=str)
             #建立args
             args = parser.parse_args()
             
             #提取參數
             _toilet_id = args['toilet_id']
             _name = args['name']
-            _country = args['country']
-            _city = args['city']
-            _district = args['district']
-            _longtitude = args['longtitude']
+            _country_id = args['country_id']
+            _city_id = args['city_id']
+            _district_id = args['district_id']
+            _longitude = args['longitude']
             _latitude = args['latitude']
+            _address = args['address']
             #呼叫sp
-            cursor.callproc('sp_UpdateToilet',(_toilet_id,_name,_country,_city,_district,_longtitude,_latitude))
+            cursor.callproc('sp_UpdateToilet',(_toilet_id,_name,_country_id,_city_id,_district_id,_longitude,_latitude,_address))
             #提取回傳的資料
             data = cursor.fetchall()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'Toilet Update success'}
+                return {'StatusCode':'200','Message': 'Toilet Update success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getCountry(Resource):
     def get(self):
@@ -303,14 +305,14 @@ class getCountry(Resource):
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','CountryInfo': data[0][0]}
+                    return {'Message': 'NO Data Found','CountryInfo': data[0][0]},204
                 else :
-                    return {'StatusCode':'200','Message': 'success!!','CountryInfo': data[0][0]} 
+                    return {'Message': 'success!!','CountryInfo': data[0][0]},204 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getCity(Resource):
     def get(self):
@@ -333,19 +335,19 @@ class getCity(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000    
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','CityInfo': data[0][0]}
+                    return {'Message': 'NO Data Found','CityInfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','CityInfo': data[0][0]} 
+                    return {'Message': 'success!!','CityInfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getDistrict(Resource):
     def get(self):
@@ -368,7 +370,7 @@ class getDistrict(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
@@ -380,7 +382,7 @@ class getDistrict(Resource):
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getAllCountry(Resource):
     def get(self):
@@ -395,16 +397,16 @@ class getAllCountry(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000   
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','CountryInfo': data[0][0]} 
+                return {'Message': 'success!!','CountryInfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getAllCity(Resource):
     def get(self):
@@ -419,16 +421,16 @@ class getAllCity(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000    
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','CityInfo': data[0][0]} 
+                return {'Message': 'success!!','CityInfo': data[0][0]},200 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getAllDistrict(Resource):
     def get(self):
@@ -443,13 +445,13 @@ class getAllDistrict(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','DistrictInfo': data[0][0]} 
+                return {'Message': 'success!!','DistrictInfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'StatusCode':'1000','error': str(e)},1000

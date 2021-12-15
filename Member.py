@@ -34,19 +34,19 @@ class Signin(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Memberinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Memberinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Memberinfo':data[0][0]} 
+                    return {'Message': 'success!!','Memberinfo':data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class Register(Resource):
     def post(self):
@@ -75,17 +75,17 @@ class Register(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'User creation success'}
+                return {'Message': 'User creation success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])}
+                return {'Message': str(data[0])},1000
                 # return abort(1000, str(data[0]))
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}, 400
+            return {'error': str(e)},1000
 
 class getMemberInfo(Resource):
     def get(self):
@@ -108,19 +108,19 @@ class getMemberInfo(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000    
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Memberinfo': data[0][0]}
+                    return {'Message': 'NO Data Found','Memberinfo': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Memberinfo': data[0][0]} 
+                    return {'Message': 'success!!','Memberinfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}, 400
+            return {'error': str(e)}, 1000
 
 class getAllMember(Resource):
     def get(self):
@@ -135,16 +135,16 @@ class getAllMember(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'200','Message': 'success!!','Memberinfo': data[0][0]} 
+                return {'Message': 'success!!','Memberinfo': data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class getMemberReviewCount(Resource):
     def get(self):
@@ -167,19 +167,19 @@ class getMemberReviewCount(Resource):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'},1000     
             else:
                 conn.commit()
                 conn.close()
                 if data[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found','Review_count': data[0][0]}
+                    return {'Message': 'NO Data Found','Review_count': data[0][0]},204
                 else:
-                    return {'StatusCode':'200','Message': 'success!!','Review_count':data[0][0]} 
+                    return {'Message': 'success!!','Review_count':data[0][0]},200
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class updateMemberInfo(Resource):
     def post(self):
@@ -208,16 +208,16 @@ class updateMemberInfo(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'UserInfo Update success'}
+                return {'Message': 'UserInfo Update success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000 
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 class updateMemberStatus(Resource):
     def post(self):
@@ -243,16 +243,16 @@ class updateMemberStatus(Resource):
             if len(data) == 0:
                 conn.commit()  
                 conn.close()        
-                return {'StatusCode':'200','Message': 'UserStatus Update success'}
+                return {'Message': 'UserStatus Update success'},200
             else:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': str(data[0])} 
+                return {'Message': str(data[0])},1000
                           
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)}
+            return {'error': str(e)},1000
 
 def Info (member_id):
         conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
@@ -266,7 +266,7 @@ def Info (member_id):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'Message': 'Error!!'}     
+                return {'Message': 'Error!!'}   
             else:
                 conn.commit()
                 conn.close()
@@ -275,7 +275,7 @@ def Info (member_id):
         except Exception as e:
             #顯示錯誤訊息
             conn.rollback()
-            return {'error': str(e)} 
+            return {'error': str(e)}
 
 def CountR(member_id):
         conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
@@ -289,7 +289,7 @@ def CountR(member_id):
             if len(data) == 0:
                 conn.commit()
                 conn.close()
-                return {'StatusCode':'1000','Message': 'Error!!'}     
+                return {'Message': 'Error!!'}   
             else:
                 conn.commit()
                 conn.close()
@@ -314,11 +314,11 @@ class getMemberAllInfo(Resource):
             info = Info(_member_id)
             count = CountR(_member_id)
             if info[0][0] is None or count[0][0] is None :
-                    return {'StatusCode':'204','Message': 'NO Data Found', 'Memberinfo':info, 'count' : count}
+                    return {'Message': 'NO Data Found', 'Memberinfo':info, 'count' : count},204
             else:
-                return {'StatusCode':'200','Message': 'success' , 'Memberinfo':info, 'count' : count}
+                return {'Message': 'success' , 'Memberinfo':info, 'count' : count},200
         except Exception as e:
             #顯示錯誤訊息
-            return {'error': str(e)}
+            return {'error': str(e)},1000
     
 
