@@ -14,7 +14,8 @@ from flask_restful import Resource, Api,reqparse
 #waitress windows 的guicorn
 from waitress import serve
 import api
-
+#from gzip import GzipCompress
+from flask_compress import Compress
 #api套件
 import Member
 import Toilet
@@ -25,8 +26,9 @@ from flask_cors import CORS
 #import threading
 #flask api 啟動
 app = Flask(__name__)
-api = Api(app)
-
+compress = Compress()
+compress.init_app(app)
+api = Api(app = app)
 #Member
 api.add_resource(Member.Signin, '/Signin')#登入get
 api.add_resource(Member.Register, '/Register')#註冊get
@@ -53,7 +55,7 @@ api.add_resource(Toilet.getToiletByLongitude, '/getToiletByLongtitude')
 api.add_resource(Toilet.getAllCity, '/getAllCity')
 api.add_resource(Toilet.getAllCountry, '/getAllCountry')
 api.add_resource(Toilet.getAllDistrict, '/getAllDistrict')
-
+api.add_resource(Toilet.getAllLoc,'/getAllLoc')
 #Review
 api.add_resource(Review.getReview, '/getReview')
 api.add_resource(Review.getAvgRating, '/getAvgRating')

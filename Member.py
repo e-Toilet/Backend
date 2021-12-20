@@ -231,7 +231,7 @@ class updateMemberStatus(Resource):
             parser.add_argument('status', type=int)
             #建立args
             args = parser.parse_args()
-            print(args)
+            #print(args)
             #提取參數
             _member_id = args['member_id']
             _status = args['status']
@@ -310,7 +310,7 @@ class getMemberAllInfo(Resource):
             args = parser.parse_args()
             #提取參數
             _member_id = args['member_id']
-            print(_member_id)
+            #print(_member_id)
             info = Info(_member_id)
             count = CountR(_member_id)
             if info[0][0] is None or count[0][0] is None :
