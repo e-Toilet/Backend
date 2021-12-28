@@ -9,10 +9,11 @@ import pandas as pd
 #flask 連接mysql
 import pymysql
 import datetime 
+import MySQLdb
 
 class Signin(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -30,6 +31,7 @@ class Signin(Resource):
             cursor.callproc('sp_Login',(_email,_password,_last_login_time))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -50,7 +52,7 @@ class Signin(Resource):
 
 class Register(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -71,6 +73,7 @@ class Register(Resource):
             cursor.callproc('sp_setNewMember',(_email,_name,_password,_last_login_time,_status))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -89,7 +92,7 @@ class Register(Resource):
 
 class getMemberInfo(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -104,6 +107,7 @@ class getMemberInfo(Resource):
             cursor.callproc('sp_getMemberinfo',(_member_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -124,13 +128,14 @@ class getMemberInfo(Resource):
 
 class getAllMember(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
             #呼叫sp
             cursor.callproc('sp_getAllMember')
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -148,7 +153,7 @@ class getAllMember(Resource):
 
 class getMemberReviewCount(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -163,6 +168,7 @@ class getMemberReviewCount(Resource):
             cursor.callproc('sp_getMemberReviewCount',(_member_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -183,7 +189,7 @@ class getMemberReviewCount(Resource):
 
 class updateMemberInfo(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -204,6 +210,7 @@ class updateMemberInfo(Resource):
             cursor.callproc('sp_UpdateMemberinfo',(_member_id,_email,_name,_password))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -221,7 +228,7 @@ class updateMemberInfo(Resource):
 
 class updateMemberStatus(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -239,6 +246,7 @@ class updateMemberStatus(Resource):
             cursor.callproc('sp_UpdateMemberStatus',(_member_id,_status))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -255,13 +263,14 @@ class updateMemberStatus(Resource):
             return {'error': str(e)},1000
 
 def Info (member_id):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
             #呼叫sp
             cursor.callproc('sp_getMemberinfo',(member_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -278,13 +287,14 @@ def Info (member_id):
             return {'error': str(e)}
 
 def CountR(member_id):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
             #呼叫sp
             cursor.callproc('sp_getMemberReviewCount',(member_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()

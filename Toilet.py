@@ -10,6 +10,8 @@ import pandas as pd
 #flask 連接mysql
 import pymysql
 import datetime
+import MySQLdb
+
 
 from werkzeug.sansio.response import Response 
 import Review
@@ -18,9 +20,10 @@ all_country = None
 all_city = None
 all_district = None
 all_Loc = None
+
 class createNewToilet(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -47,6 +50,7 @@ class createNewToilet(Resource):
             cursor.callproc('sp_setNewToilet',(_name,_country_id,_city_id,_district_id,_longitude,_latitude,_address))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -68,20 +72,26 @@ class createNewToilet(Resource):
 
 class getToiletByLoc(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
             parser = reqparse.RequestParser()
             parser.add_argument('district_id', type=int)
+            parser.add_argument('longitude', type=float)
+            parser.add_argument('latitude', type=float)
             #建立args
             args = parser.parse_args()
             #提取參數
             _district_id = args['district_id']
+            _longitude = args['longitude']
+            _latitude = args['latitude']
+            
             #呼叫sp
-            cursor.callproc('sp_getToiletByLoc',(_district_id,))
+            cursor.callproc('sp_getToiletByLoc',(_district_id,_longitude,_latitude))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -105,7 +115,7 @@ class getToiletByLoc(Resource):
 
 class getToiletByLongitude(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -123,6 +133,7 @@ class getToiletByLongitude(Resource):
             cursor.callproc('sp_getToiletByLongitude',(_longitude,_latitude))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             # data_dict = json.load(data[0][0])
             # data_json = json.dumps(data_dict)
             # avgRating = Review.getAvgRating(data_json['toilet_id'])
@@ -148,7 +159,7 @@ class getToiletByLongitude(Resource):
 
 class getToiletByID(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -163,6 +174,7 @@ class getToiletByID(Resource):
             cursor.callproc('sp_getToiletbyID',(_toilet_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -186,12 +198,13 @@ class getAllToilet(Resource):
         global all_toilet
         if all_toilet is None :
             #print('not exist all_toilet')
-            conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+            conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
             cursor = conn.cursor()
             try:  
                 cursor.callproc('sp_getAllToilet')
                 #提取回傳的資料
                 data = cursor.fetchall()
+                cursor.close()
                 #判斷回傳結果
                 if len(data) == 0:
                     conn.commit()
@@ -220,7 +233,7 @@ class getAllToilet(Resource):
 
 class deleteToilet(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -235,6 +248,7 @@ class deleteToilet(Resource):
             cursor.callproc('sp_DeleteToilet',(_toilet_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -253,7 +267,7 @@ class deleteToilet(Resource):
 
 class updateToilet(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -283,6 +297,7 @@ class updateToilet(Resource):
             cursor.callproc('sp_UpdateToilet',(_toilet_id,_name,_country_id,_city_id,_district_id,_longitude,_latitude,_address))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -301,7 +316,7 @@ class updateToilet(Resource):
 
 class getCountry(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
         #建立parser 
@@ -316,6 +331,7 @@ class getCountry(Resource):
             cursor.callproc('sp_getCountry',(_country_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -337,7 +353,7 @@ class getCountry(Resource):
 
 class getCity(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
         #建立parser 
@@ -352,6 +368,7 @@ class getCity(Resource):
             cursor.callproc('sp_getCity',(_city_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -372,7 +389,7 @@ class getCity(Resource):
 
 class getDistrict(Resource):   
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
         #建立parser 
@@ -387,6 +404,7 @@ class getDistrict(Resource):
             cursor.callproc('sp_getDistrict',(_district_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -409,13 +427,14 @@ class getAllCountry(Resource):
     def get(self):
         global all_country 
         if all_country is None:
-            conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+            conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
             cursor = conn.cursor()
             try:  
                 #呼叫sp
                 cursor.callproc('sp_getAllCountry')
                 #提取回傳的資料
                 data = cursor.fetchall()
+                cursor.close()
                 #判斷回傳結果
                 if len(data) == 0:
                     conn.commit()
@@ -437,13 +456,14 @@ class getAllCity(Resource):
     def get(self):
         global all_city
         if all_city is None:
-            conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+            conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
             cursor = conn.cursor()
             try:  
                 #呼叫sp
                 cursor.callproc('sp_getAllCity')
                 #提取回傳的資料
                 data = cursor.fetchall()
+                cursor.close()
                 #判斷回傳結果
                 if len(data) == 0:
                     conn.commit()
@@ -466,13 +486,14 @@ class getAllDistrict(Resource):
     def get(self):
         global all_district
         if all_district is None:
-            conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+            conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
             cursor = conn.cursor()
             try:  
                 #呼叫sp
                 cursor.callproc('sp_getAllDistrict')
                 #提取回傳的資料
                 data = cursor.fetchall()
+                cursor.close()
                 #判斷回傳結果
                 if len(data) == 0:
                     conn.commit()
@@ -506,13 +527,14 @@ class getAllLoc(Resource):
         return {'Message': 'success!!','CountryInfo':all_country,'CityInfo':all_city,'DistrictInfo':all_district},200
         
 def getAllCityTable():
-    conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+    conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
     cursor = conn.cursor()
     try:  
         #呼叫sp
         cursor.callproc('sp_getAllCity')
         #提取回傳的資料
         data = cursor.fetchall()
+        cursor.close()
         #判斷回傳結果
         if len(data) == 0:
             conn.commit()
@@ -529,13 +551,14 @@ def getAllCityTable():
         return {'error': str(e)},1000
 
 def getAllCountryTable():
-    conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+    conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
     cursor = conn.cursor()
     try:  
         #呼叫sp
         cursor.callproc('sp_getAllCountry')
         #提取回傳的資料
         data = cursor.fetchall()
+        cursor.close()
         #判斷回傳結果
         if len(data) == 0:
             conn.commit()
@@ -552,13 +575,14 @@ def getAllCountryTable():
         return {'error': str(e)},1000
 
 def getAllDistrictTable():
-    conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+    conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
     cursor = conn.cursor()
     try:  
         #呼叫sp
         cursor.callproc('sp_getAllDistrict')
         #提取回傳的資料
         data = cursor.fetchall()
+        cursor.close()
         #判斷回傳結果
         if len(data) == 0:
             conn.commit()
@@ -577,12 +601,13 @@ def getAllDistrictTable():
 
 def getallToilet():
     global all_toilet
-    conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+    conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
     cursor = conn.cursor()
     try:  
         cursor.callproc('sp_getAllToilet')
         #提取回傳的資料
         data = cursor.fetchall()
+        cursor.close()
         #判斷回傳結果
         if len(data) == 0:
             conn.commit()

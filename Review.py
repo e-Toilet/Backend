@@ -9,10 +9,10 @@ import pandas as pd
 #flask 連接mysql
 import pymysql
 import datetime 
-
-class CreateNewReview(Resource):
+import MySQLdb
+class createNewReview(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -34,6 +34,7 @@ class CreateNewReview(Resource):
             cursor.callproc('sp_CreateReview',(_member_id,_toilet_id,_content,_rating))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -53,7 +54,7 @@ class CreateNewReview(Resource):
 
 class getReview(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -68,6 +69,7 @@ class getReview(Resource):
             cursor.callproc('sp_getReview',(_toilet_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -88,7 +90,7 @@ class getReview(Resource):
 
 class getAvgRating(Resource):
     def get(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -103,6 +105,7 @@ class getAvgRating(Resource):
             cursor.callproc('sp_getAverageRating',(_toilet_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()
@@ -124,7 +127,7 @@ class getAvgRating(Resource):
 
 class deleteReview(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -140,6 +143,7 @@ class deleteReview(Resource):
             cursor.callproc('sp_DeleteReivew',(_review_id,))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
@@ -158,7 +162,7 @@ class deleteReview(Resource):
 
 class updateReview(Resource):
     def post(self):
-        conn = pymysql.connect(host="localhost",user="root",password="12345",database="mydb" )
+        conn = MySQLdb.connect(host="localhost",user="root",password="12345",database="mydb" )
         cursor = conn.cursor()
         try:  
            #建立parser 
@@ -179,6 +183,7 @@ class updateReview(Resource):
             cursor.callproc('sp_UpdateReview',(_review_id,_content,_rating))
             #提取回傳的資料
             data = cursor.fetchall()
+            cursor.close()
             #判斷回傳結果
             if len(data) == 0:
                 conn.commit()  
